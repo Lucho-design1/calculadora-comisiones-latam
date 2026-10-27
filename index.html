@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Comisiones LatAm | Stripe vs PayPal vs Wise vs USDT</title>
+  <style>
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0f172a; color: #f8fafc; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+    .container { background-color: #1e293b; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); max-width: 600px; width: 100%; }
+    h1 { color: #38bdf8; font-size: 1.8rem; margin-bottom: 10px; text-align: center; }
+    p { color: #94a3b8; font-size: 0.95rem; text-align: center; margin-bottom: 25px; }
+    .input-group { margin-bottom: 20px; }
+    label { display: block; margin-bottom: 8px; font-weight: 600; color: #cbd5e1; }
+    input[type="number"] { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #334155; background-color: #0f172a; color: #fff; font-size: 1rem; box-sizing: border-box; }
+    .results { margin-top: 25px; border-top: 1px solid #334155; padding-top: 20px; }
+    .card { background: #334155; padding: 15px; border-radius: 8px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+    .card.best { border: 2px solid #22c55e; background: #14532d; }
+    .platform { font-weight: bold; font-size: 1.1rem; }
+    .amount { font-size: 1.2rem; font-weight: bold; color: #4ade80; }
+    .fee { font-size: 0.85rem; color: #f87171; }
+    .btn { display: block; width: 100%; padding: 12px; background: #0284c7; color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: bold; cursor: pointer; text-align: center; text-decoration: none; margin-top: 15px; box-sizing: border-box; }
+    .btn:hover { background: #0369a1; }
+    .cta-banner { background: linear-gradient(135deg, #4f46e5, #9333ea); padding: 15px; border-radius: 8px; margin-top: 25px; text-align: center; }
+    .cta-banner h3 { margin: 0 0 8px 0; font-size: 1.1rem; }
+    .cta-banner p { margin: 0 0 12px 0; font-size: 0.85rem; color: #e0e7ff; }
+    .cta-btn { background: #facc15; color: #000; padding: 10px 18px; border-radius: 6px; font-weight: bold; text-decoration: none; display: inline-block; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Calculadora de Comisiones LatAm</h1>
+    <p>Compara el monto neto real que recibes al cobrar tus servicios en internet.</p>
+    <div class="input-group">
+      <label for="amountInput">Monto a Cobrar (USD):</label>
+      <input type="number" id="amountInput" value="100" min="1" oninput="calculate()">
+    </div>
+    <div class="results" id="resultsContainer"></div>
+    <div class="cta-banner">
+      <h3>⛏️ Ahorra comisiones y genera ingresos en Cripto</h3>
+      <p>Descubre cómo recibir pagos en USDT sin comisiones bancarias abusivas con GoMining.</p>
+      <a href="https://gomining.com/?ref=tCW6U" target="_blank" class="cta-btn">Explorar GoMining (Bono tCW6U)</a>
+    </div>
+    <a href="https://paypal.me/lucianobenech" target="_blank" class="btn">¿Te fue útil? Invítanos un café ($1 USD vía PayPal)</a>
+  </div>
+  <script>
+    function calculate() {
+      const amount = parseFloat(document.getElementById('amountInput').value) || 0;
+      const paypalFee = (amount * 0.054) + 0.30;
+      const paypalNet = Math.max(0, amount - paypalFee);
+      const stripeFee = (amount * 0.039) + 0.30;
+      const stripeNet = Math.max(0, amount - stripeFee);
+      const wiseFee = (amount * 0.015) + 0.50;
+      const wiseNet = Math.max(0, amount - wiseFee);
+      const usdtFee = 1.00;
+      const usdtNet = Math.max(0, amount - usdtFee);
+
+      const data = [
+        { name: 'USDT Cripto (TRC20/Polygon)', net: usdtNet, fee: usdtFee, best: true },
+        { name: 'Wise Transfer', net: wiseNet, fee: wiseFee, best: false },
+        { name: 'Stripe (Internacional)', net: stripeNet, fee: stripeFee, best: false },
+        { name: 'PayPal (Cobro Comercial)', net: paypalNet, fee: paypalFee, best: false }
+      ].sort((a,b) => b.net - a.net);
+
+      let html = '';
+      data.forEach(item => {
+        html += `<div class="card ${item.best ? 'best' : ''}">
+          <div>
+            <div class="platform">${item.name} ${item.best ? '🏆 Máximo Recibido' : ''}</div>
+            <div class="fee">Comisión aprox: $${item.fee.toFixed(2)} USD</div>
+          </div>
+          <div class="amount">$${item.net.toFixed(2)} USD</div>
+        </div>`;
+      });
+      document.getElementById('resultsContainer').innerHTML = html;
+    }
+    calculate();
+  </script>
+</body>
+</html>
